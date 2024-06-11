@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 const userName = 'USER';
 
 void main() {
+  // Sert a déclarer des variables null sans avoir a leur assigner de valeurs;
+  int? nullableVar;
+
+  // Sert a assigner une valeur une valeur a une variable nullable uniquement si elle est null
+  nullableVar ??= 100;
+
+  // Sert a déclarer une variable sans lui assigner de valeur a condition de ne pas l'utiliser avant !
+  late String mustBeAssignedVar;
+
+  //print(mustBeAssignedVar); = error car pas encore assignée
+
+  mustBeAssignedVar = "New value";
+
   runApp(const MyApp());
   // runApp(const MaterialApp(home: Counter()));
   // runApp(const MaterialApp(home: DynamicBackground()));
@@ -17,19 +31,126 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // return const MaterialApp(home: MyTextField());
-    return const MaterialApp(home: MyListBuilderView());
+    // return const MaterialApp(home: MyListBuilderView());
+    return const MaterialApp(title: "Flutter Tutorial", home: MyDrawer());
   }
 }
 
+/*
+* Drawer Widget
+* */
+
+class MyDrawer extends StatelessWidget {
+  const MyDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title: const Text(
+            "Drawer widget exemple",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Colors.blueAccent),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            const SizedBox(
+              height: 60.0,
+              child: DrawerHeader(
+                decoration: BoxDecoration(color: Colors.redAccent),
+                child: Text("Drawer Header"),
+              ),
+            ), // Sert a gerer les dimension d'un widget en ligne?
+            ListTile(
+              title: const Text("First Screen"),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const FirstScreen()));
+              },
+            ),
+            ListTile(
+              title: const Text("Second Screen"),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SecondScreen()));
+              },
+            )
+          ],
+        ),
+      ),
+      body: const Center(
+        child: Text("My Home Page"),
+      ),
+    );
+  }
+}
+
+/*
+* Navigation with Widgets
+* */
+
+class FirstScreen extends StatelessWidget {
+  const FirstScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("My first screen"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return const SecondScreen();
+            }));
+          },
+          child: const Text("Go to second Screen"),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  const SecondScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("My Second screen"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            // Retour au précédant écran
+            Navigator.pop(context);
+          },
+          child: const Text("Go to first screen"),
+        ),
+      ),
+    );
+  }
+}
+
+/*
+* Widget Stateless & Stateful part
+* */
+
 class MyListBuilderView extends StatelessWidget {
-  
   const MyListBuilderView({super.key});
 
   static const items = ["item1", "item2", "item3"];
 
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
       title: "Example",
       home: Scaffold(
@@ -52,7 +173,6 @@ class MyListBuilderView extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class MyListView extends StatefulWidget {
@@ -73,35 +193,35 @@ class _MyListView extends State<MyListView> {
         children: [
           ListTile(
             leading: const Icon(Icons.person),
-            title: const  Text("Person One"),
+            title: const Text("Person One"),
             // subtitle: const  Text("email@one.fr"),
             // trailing: const  Icon(Icons.arrow_forward),
             onTap: () => print("ListTile 1 was Tapped!"),
           ),
           ListTile(
             leading: const Icon(Icons.person),
-            title: const  Text("Person Two"),
+            title: const Text("Person Two"),
             // subtitle: const  Text("email@one.fr"),
             // trailing: const  Icon(Icons.arrow_forward),
             onTap: () => print("ListTile 2 was Tapped!"),
           ),
           ListTile(
             leading: const Icon(Icons.person),
-            title: const  Text("Person Three"),
+            title: const Text("Person Three"),
             // subtitle: const  Text("email@one.fr"),
             // trailing: const  Icon(Icons.arrow_forward),
             onTap: () => print("ListTile 3 was Tapped!"),
           ),
           ListTile(
             leading: const Icon(Icons.person),
-            title: const  Text("Person Four"),
+            title: const Text("Person Four"),
             // subtitle: const  Text("email@one.fr"),
             // trailing: const  Icon(Icons.arrow_forward),
             onTap: () => print("ListTile 4 was Tapped!"),
           ),
           ListTile(
             leading: const Icon(Icons.person),
-            title: const  Text("Person Five"),
+            title: const Text("Person Five"),
             // subtitle: const  Text("email@one.fr"),
             // trailing: const  Icon(Icons.arrow_forward),
             onTap: () => print("ListTile 5 was Tapped!"),
