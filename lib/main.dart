@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 const userName = 'USER';
+
+List<Todo> todos = [
+  Todo("Paint House", "Paint it black"),
+  Todo("Pet the Dog", "Use a comb to brush as well"),
+  Todo("Go to Moon", "Don't forget to use rockets!")
+];
 
 void main() {
   // Sert a déclarer des variables null sans avoir a leur assigner de valeurs;
@@ -16,6 +21,8 @@ void main() {
   //print(mustBeAssignedVar); = error car pas encore assignée
 
   mustBeAssignedVar = "New value";
+
+  print(mustBeAssignedVar);
 
   runApp(const MyApp());
   // runApp(const MaterialApp(home: Counter()));
@@ -32,8 +39,143 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // return const MaterialApp(home: MyTextField());
     // return const MaterialApp(home: MyListBuilderView());
-    return const MaterialApp(title: "Flutter Tutorial", home: MyDrawer());
+    // return MaterialApp(title: "Flutter Tutorial", home: TodosListScreen(todos: todos));
+    return const MaterialApp(title: "Return Data", home: HomeScreen());
   }
+}
+
+/*
+* Navigation with data
+* */
+
+// Returning data with Navigator.pop()
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String _selection = 'None';
+
+  void _onGoToOption() async {
+    final choice = await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const SelectionScreen()));
+
+    setState(() {
+      _selection = choice ?? "None";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Select an Option"),
+      ),
+      body: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Your Selection: $_selection"),
+          const SizedBox(height: 20),
+          ElevatedButton(
+              onPressed: _onGoToOption,
+              child: const Text("Go to Option Screen"))
+        ],
+      )),
+    );
+  }
+}
+
+class SelectionScreen extends StatelessWidget {
+  const SelectionScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    String opt1 = "OPTION ONE";
+    String opt2 = "OPTION TWO";
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Select an Option"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, opt1);
+                },
+                child: Text(opt1)),
+            const SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context, opt2);
+                },
+                child: Text(opt2))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Sending data with Navigator.push()
+
+class TodosListScreen extends StatelessWidget {
+  final List<Todo> todos;
+
+  const TodosListScreen({super.key, required this.todos});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Todo List"),
+      ),
+      body: ListView.builder(
+          itemCount: todos.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(todos[index].title),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TodoDetail(todo: todos[index])));
+              },
+            );
+          }),
+    );
+  }
+}
+
+class TodoDetail extends StatelessWidget {
+  final Todo todo;
+
+  const TodoDetail({super.key, required this.todo});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(todo.title),
+      ),
+      body: Center(
+        child: Text(todo.description),
+      ),
+    );
+  }
+}
+
+class Todo {
+  final String title;
+  final String description;
+
+  Todo(this.title, this.description);
 }
 
 /*
@@ -91,7 +233,7 @@ class MyDrawer extends StatelessWidget {
 }
 
 /*
-* Navigation with Widgets
+* Simple Navigation with Widgets
 * */
 
 class FirstScreen extends StatelessWidget {
@@ -143,6 +285,8 @@ class SecondScreen extends StatelessWidget {
 /*
 * Widget Stateless & Stateful part
 * */
+
+// Dynamic List
 
 class MyListBuilderView extends StatelessWidget {
   const MyListBuilderView({super.key});
@@ -232,6 +376,12 @@ class _MyListView extends State<MyListView> {
   }
 }
 
+/*
+* Stateful Widgets Part
+* */
+
+// Dialog Box Displaying
+
 class MyDialogBox extends StatefulWidget {
   const MyDialogBox({super.key});
 
@@ -294,6 +444,8 @@ class _MyDialogBox extends State<MyDialogBox> {
   }
 }
 
+// TextField Use
+
 class MyTextField extends StatefulWidget {
   const MyTextField({super.key});
 
@@ -330,6 +482,8 @@ class _MyTextField extends State<MyTextField> {
     );
   }
 }
+
+// SetState use for updating states
 
 class Counter extends StatefulWidget {
   const Counter({super.key});
@@ -393,6 +547,12 @@ class _DynamicBackgroundState extends State<DynamicBackground> {
   Color getColor() => isButtonPressed ? Colors.red : Colors.blue;
 }
 
+/*
+* Stateless Widgets Part
+* */
+
+// Rows & Column Widget Handling
+
 class RowsAndColumns extends StatelessWidget {
   const RowsAndColumns({super.key});
 
@@ -428,6 +588,8 @@ class RowsAndColumns extends StatelessWidget {
   }
 }
 
+// Button action
+
 class UserButton extends StatelessWidget {
   const UserButton({super.key});
 
@@ -451,6 +613,8 @@ class UserButton extends StatelessWidget {
     );
   }
 }
+
+// Simple Widget Displaying
 
 class SimpleStatelessWidget extends StatelessWidget {
   const SimpleStatelessWidget({super.key});
