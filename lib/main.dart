@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const userName = 'USER';
+const appTitle = "Form Styling Demo";
 
 List<Todo> todos = [
   Todo("Paint House", "Paint it black"),
@@ -40,7 +42,205 @@ class MyApp extends StatelessWidget {
     // return const MaterialApp(home: MyTextField());
     // return const MaterialApp(home: MyListBuilderView());
     // return MaterialApp(title: "Flutter Tutorial", home: TodosListScreen(todos: todos));
-    return const MaterialApp(title: "Return Data", home: HomeScreen());
+    // return const MaterialApp(title: "Return Data", home: HomeScreen());
+    // return MaterialApp(
+    //     title: appTitle,
+    //     theme: ThemeData(
+    //         colorScheme: ColorScheme.fromSeed(
+    //           seedColor: Colors.deepPurple,
+    //           brightness: Brightness.light,
+    //         ),
+    //         fontFamily: 'Roboto'),
+    //     home: const MyForm());
+
+    // return const MaterialApp(
+    //   title: appTitle,
+    //   home: MyFocusedForm(),
+    // );
+
+    return const MaterialApp(
+      title: appTitle,
+      home: MyFormWithBetterChangingInputs(),
+    );
+  }
+}
+
+class MyFormWithBetterChangingInputs extends StatefulWidget {
+  const MyFormWithBetterChangingInputs({super.key});
+
+  @override
+  State<MyFormWithBetterChangingInputs> createState() =>
+      _MyFormWithBetterChangingInputs();
+}
+
+class _MyFormWithBetterChangingInputs
+    extends State<MyFormWithBetterChangingInputs> {
+  final myController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    myController.addListener(_printLatestValue);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    myController.dispose();
+    super.dispose(); // A appeler toujours en dernier
+  }
+
+  void _printLatestValue() {
+    print('Second field updated: ${myController.text}');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("App Bar")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              onChanged: (value) {
+                print("First Text value without controller: $value");
+              },
+            ),
+            TextField(
+              controller: myController,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/*
+* Input Change handling
+* */
+
+/*
+* Focus upon filling inputs form
+* */
+
+class MyFocusedForm extends StatefulWidget {
+  const MyFocusedForm({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _MyFocusedForm();
+}
+
+class _MyFocusedForm extends State<MyFocusedForm> {
+  late FocusNode myFocusNode;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("My Focused Form"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const TextField(
+              decoration: InputDecoration(hintText: "INPUT ONE"),
+              autofocus: true,
+            ),
+            TextField(
+              decoration: const InputDecoration(hintText: "INPUT TWO"),
+              focusNode: myFocusNode,
+            ),
+            const TextField(
+                decoration: InputDecoration(hintText: "INPUT THREE")),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          myFocusNode.requestFocus();
+        },
+        tooltip: "Click me for focus on box 2",
+        child: const Icon(Icons.star),
+      ),
+    );
+  }
+}
+
+/*
+ * Forms Theme, and Styling
+ */
+
+class MyForm extends StatelessWidget {
+  const MyForm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text(appTitle),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const TextField(
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                decoration: InputDecoration(
+                    hintText: "TEXT FIELD",
+                    filled: true,
+                    fillColor: Colors.grey,
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 30,
+                    )),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                      labelText: 'TEXT FORM FIELD',
+                      filled: true,
+                      fillColor: Colors.grey,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ))),
+              const SizedBox(height: 48),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                child: const Text(
+                  "Submit",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }
 
