@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 const userName = 'USER';
@@ -24,7 +23,7 @@ void main() {
 
   mustBeAssignedVar = "New value";
 
-  print(mustBeAssignedVar);
+  // print(mustBeAssignedVar);
 
   runApp(const MyApp());
   // runApp(const MaterialApp(home: Counter()));
@@ -60,7 +59,137 @@ class MyApp extends StatelessWidget {
 
     return const MaterialApp(
       title: appTitle,
-      home: MyFormWithBetterChangingInputs(),
+      home: MyFormGlobalKey(),
+    );
+  }
+}
+
+/*
+* Forms with Global Key a form widget ready right of the bat
+* */
+
+class MyFormGlobalKey extends StatefulWidget {
+  const MyFormGlobalKey({super.key});
+
+  @override
+  State<MyFormGlobalKey> createState() {
+    return _MyFormGlobalKey();
+  }
+}
+
+class _MyFormGlobalKey extends State<MyFormGlobalKey> {
+  final _formKey = GlobalKey<FormState>();
+  final _textController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _textController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Usage of the main Form Widget"),
+      ),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _textController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Please enter some text";
+                }
+                return null;
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Text was: ${_textController.text}'),
+                      ));
+                    }
+                  },
+                  child: const Text("Submit")),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/*
+* Input Change handling with Input Controller
+* */
+
+class UsingControllerValueAsFormInputs extends StatefulWidget {
+  const UsingControllerValueAsFormInputs({super.key});
+
+  @override
+  State<UsingControllerValueAsFormInputs> createState() =>
+      _UsingControllerValueAsFormInputs();
+}
+
+class _UsingControllerValueAsFormInputs
+    extends State<UsingControllerValueAsFormInputs> {
+  final firstController = TextEditingController();
+  final secondController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    firstController.dispose();
+    secondController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Text Input"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: firstController,
+              decoration: const InputDecoration(labelText: 'Name'),
+            ),
+            TextField(
+              controller: secondController,
+              decoration: const InputDecoration(labelText: 'Email'),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  content: Column(
+                    children: [
+                      Text("First value: ${firstController.text}"),
+                      const SizedBox(height: 10),
+                      Text("Second value: ${secondController.text}"),
+                    ],
+                  ),
+                );
+              });
+        },
+        tooltip: 'Show me the values',
+        child: const Icon(Icons.text_fields),
+      ),
     );
   }
 }
@@ -117,10 +246,6 @@ class _MyFormWithBetterChangingInputs
     );
   }
 }
-
-/*
-* Input Change handling
-* */
 
 /*
 * Focus upon filling inputs form
